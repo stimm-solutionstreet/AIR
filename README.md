@@ -10,18 +10,18 @@ flowchart LR
   end
 
   subgraph Operational["Operational Systems (Systems of Record)"]
-    DF["Dayforce\nHR & Payroll"]
-    CE["Dynamics 365 CE\nCustomer / Grant Engagement"]
-    FIN["Dynamics 365 Finance\n(XTIVIA GovCon365)\nFinancial System of Record"]
+    DF["Dayforce<br/>HR & Payroll"]
+    CE["Dynamics 365 CE<br/>Customer / Grant Engagement"]
+    FIN["Dynamics 365 Finance<br/>(XTIVIA GovCon365)<br/>Financial System of Record"]
   end
 
   subgraph Documents["Document Management"]
-    SP["SharePoint\n(D365 Document Store)"]
+    SP["SharePoint<br/>(D365 Document Store)"]
     DFDOC["Dayforce Documents"]
   end
 
   subgraph Data["Enterprise Data Platform"]
-    FAB["Microsoft Fabric\nLakehouse"]
+    FAB["Microsoft Fabric<br/>Lakehouse"]
   end
 
   subgraph Analytics["Analytics & Reporting"]
