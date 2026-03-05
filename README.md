@@ -12,7 +12,7 @@ flowchart LR
   subgraph Operational["Operational Systems (Systems of Record)"]
     DF["Dayforce\nHR & Payroll"]
     CE["Dynamics 365 CE\nCustomer / Grant Engagement"]
-    FIN["Dynamics 365 Finance\nFinancial System of Record"]
+    FIN["Dynamics 365 Finance\n(XTIVIA GovCon365)\nFinancial System of Record"]
   end
 
   subgraph Documents["Document Management"]
