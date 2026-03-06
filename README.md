@@ -11,8 +11,12 @@ flowchart LR
 
   subgraph Operational["Operational Systems (Systems of Record)"]
     DF["Dayforce<br/>HR & Payroll"]
-    CE["Dynamics 365 CE<br/>Customer / Grant Engagement"]
-    FIN["Dynamics 365 Finance<br/>(XTIVIA GovCon365)<br/>Financial System of Record"]
+
+    subgraph D365["Microsoft Dynamics 365 Platform"]
+      CE["Dynamics 365 CE<br/>Customer / Grant Engagement"]
+      FIN["Dynamics 365 Finance<br/>(XTIVIA GovCon365)<br/>Financial System of Record"]
+    end
+
   end
 
   subgraph Documents["Document Management"]
@@ -29,11 +33,11 @@ flowchart LR
   end
 
   %% Identity
-  Entra --- DF
-  Entra --- CE
-  Entra --- FIN
-  Entra --- FAB
-  Entra --- PBI
+Entra -. "SSO" .-> FIN
+Entra -. "SSO" .-> CE
+Entra -. "SSO" .-> DF
+Entra -. "SSO" .-> FAB
+Entra -. "SSO" .-> PBI
 
   %% Operational sync relationships
   DF <--> FIN
@@ -43,14 +47,28 @@ flowchart LR
   FIN --- SP
   DF --- DFDOC
 
-  %% Primary reporting path (governed analytics)
+  %% Data ingestion
   DF --> FAB
   CE --> FAB
   FIN --> FAB
+  
+  %% Primary reporting path
   FAB --> PBI
 
   %% Optional operational reporting (direct-to-SOR)
   DF -. "Operational dashboards (limited)" .-> PBI
   CE -. "Operational dashboards (limited)" .-> PBI
   FIN -. "Operational dashboards (limited)" .-> PBI
+```
+
+Systems of Record → Enterprise Data Platform → Reporting and Analytics 
+```mermaid
+flowchart LR
+
+SOR["Systems of Record"]
+EDP["Enterprise Data Platform"]
+REP["Reporting and Analytics"]
+
+SOR --> EDP
+EDP --> REP
 ```
