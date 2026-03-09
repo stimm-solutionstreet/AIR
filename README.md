@@ -3,6 +3,8 @@ This is a location for editing Mermaid files for the ConOps and other documents.
 
 Systems of Record → Enterprise Data Platform → Reporting and Analytics 
 ```mermaid
+%%{init: { "flowchart": { "subGraphTitleMargin": { "top": 60, "bottom": 60 } } } }%%
+
 flowchart LR
 
 SOR["Systems of Record"]
@@ -11,6 +13,56 @@ REP["Reporting and Analytics"]
 
 SOR --> EDP
 EDP --> REP
+```
+High Level D365 + Fabric reference diagram
+```mermaid
+flowchart TB
+
+%% Operational Systems
+subgraph Operational["Operational Systems<br/>(Systems of Record)"]
+            I1-->D365
+            class I1 disable;
+            classDef disable display:none;
+            linkStyle 0 display:none;
+DF[Dayforce<br/>HR & Payroll]
+D365[Dynamics 365<br/>Finance + GovCon365]
+CE[Dynamics 365 CE / Dataverse<br/>Grants & CRM]
+end
+
+%% Integration
+subgraph Integration["Data Integration"]
+API[APIs / Integration Services]
+DW[Dual Write / Data Sync]
+PIPE[Data Pipelines / Fabric Data Factory]
+end
+
+%% Data Platform
+subgraph DataPlatform["Enterprise Data Platform"]
+LH[Fabric Lakehouse<br/>OneLake Storage]
+WH[Fabric Warehouse / Semantic Models]
+end
+
+%% Analytics
+subgraph Analytics["Reporting & Analytics"]
+PBI[Power BI]
+DS[Advanced Analytics / Data Science]
+end
+
+%% Operational integration
+DF --> API
+D365 --> DW
+CE --> DW
+
+DW --> API
+
+%% Data ingestion
+API --> PIPE
+PIPE --> LH
+
+%% Analytics layer
+LH --> WH
+WH --> PBI
+LH --> DS
 ```
 
 High level target state diagram.
