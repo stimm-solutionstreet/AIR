@@ -128,24 +128,31 @@ Entra -. "SSO" .-> PBI
 ```
 Medalion Architecture
 ```mermaid
-graph LR
-    Raw[Source Data] --> Bronze
-    
-    subgraph Lakehouse
-        Bronze[(Bronze - Raw Data)]
-        Silver[(Silver - Filtered/Cleaned)]
-        Gold[(Gold - Aggregated/Business)]
-    end
-    
-    Bronze -->|ETL/Transformation| Silver
-    Silver -->|Aggregation| Gold
-    
-    Gold --> BI[BI Dashboards]
-    %% Gold --> ML[ML Models]
-    
-    style Bronze fill:#A97142,stroke:#333
-    style Silver fill:#BCC6CC,stroke:#333
-    style Gold fill:#FFD700,stroke:#333
+flowchart LR
+
+DF[Dayforce<br/>HR & Payroll]
+D365[D365 Finance]
+CE[D365 CE / Dataverse]
+
+DF --> Bronze
+D365 --> Bronze
+CE --> Bronze
+
+subgraph Lakehouse["Fabric Lakehouse (OneLake)"]
+    Bronze[(Bronze<br/>Raw/Landing Data)]
+    Silver[(Silver<br/>Cleaned/Curated Data)]
+    Gold[(Gold<br/>Semantic/Reporting Data)]
+end
+
+Bronze -->|Transform/Standardize| Silver
+Silver -->|Aggregate/Model| Gold
+Gold --> BI[Power BI Dashboards]
+Gold -.-> DS[Advanced Analytics/Data Science]
+
+style DS stroke-dasharray: 5, 5;
+style Bronze fill:#A97142,stroke:#333
+style Silver fill:#BCC6CC,stroke:#333
+style Gold fill:#FFD700,stroke:#333
 ```
 
 Low level target state diagram.
