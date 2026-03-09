@@ -20,10 +20,12 @@ flowchart TB
 
 %% Operational Systems
 subgraph Operational["Operational Systems<br/>(Systems of Record)"]
-            I1-->D365
+
+%% invisible spacing node to work around Mermaid layout bug see: https://stackoverflow.com/questions/74098079/how-to-prevent-overwritting-elements-when-line-breaks-in-subgraph-titles-in-mer
+            I1~~~D365
             class I1 disable;
             classDef disable display:none;
-            linkStyle 0 display:none;
+
 DF[Dayforce<br/>HR & Payroll]
 D365[Dynamics 365<br/>Finance + GovCon365]
 CE[Dynamics 365 CE / Dataverse<br/>Grants & CRM]
