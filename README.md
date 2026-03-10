@@ -465,3 +465,160 @@ flowchart LR
     D365CE --> MON
     FAB --> MON
 ```
+
+Network view draft
+```mermaid
+flowchart TB
+    %% =========================
+    %% Enterprise Edge / Users
+    %% =========================
+    U["Enterprise Users / Admins / Analysts"]
+    BR["AIR Corporate Network / Internet Edge"]
+    U --> BR
+
+    %% =========================
+    %% Identity / Control Plane
+    %% =========================
+    subgraph ID["Identity & Control Plane"]
+        ENTRA["Microsoft Entra ID<br/>SSO / MFA / Conditional Access / PIM"]
+        DNS["Private DNS / Name Resolution"]
+        POL["Azure Policy / Landing Zone Governance"]
+    end
+
+    BR --> ENTRA
+
+    %% =========================
+    %% SaaS Business Platforms
+    %% =========================
+    subgraph SAAS["SaaS Business Platforms"]
+        DAY["Dayforce<br/>HR / Payroll SOR"]
+        D365F["Dynamics 365 Finance<br/>GovCon365 / Finance SOR"]
+        D365CE["Dynamics 365 CE / Dataverse<br/>Grant / Customer Engagement"]
+        SP["SharePoint Online<br/>Document Storage"]
+        FABS["Microsoft Fabric SaaS Plane<br/>OneLake / Lakehouse / Power BI"]
+    end
+
+    ENTRA --> DAY
+    ENTRA --> D365F
+    ENTRA --> D365CE
+    ENTRA --> SP
+    ENTRA --> FABS
+
+    %% =========================
+    %% Azure Landing Zone
+    %% =========================
+    subgraph ALZ["Azure Landing Zone"]
+        subgraph PLATFORM["Platform Landing Zone"]
+            HUB["Hub VNet"]
+            FW["Azure Firewall / Central Egress Control"]
+            BAST["Privileged Admin Path / Bastion or Controlled Admin Access"]
+            LOG["Azure Monitor / Log Analytics"]
+            SENT["Microsoft Sentinel"]
+            KV["Key Vault"]
+            PEPOL["Private Endpoint Policies / Route Control"]
+        end
+
+        subgraph APPS["Application Landing Zones by Environment"]
+            subgraph DEV["DEV"]
+                DEVV["Spoke VNet - Dev"]
+                DEVINT["Integration Runtimes / Optional ADF / Functions / Automation"]
+            end
+            subgraph TEST["TEST / UAT"]
+                TESTV["Spoke VNet - Test"]
+                TESTINT["Integration Runtimes / Optional ADF / Functions / Automation"]
+            end
+            subgraph PROD["PROD"]
+                PRODV["Spoke VNet - Prod"]
+                PRODINT["Integration Runtimes / Optional ADF / Functions / Automation"]
+            end
+        end
+
+        subgraph DATA["Customer-Managed Data Services"]
+            ADLS["ADLS Gen2 / Blob<br/>Archive / Synapse Link Landing / Retention"]
+            EV["Event Grid / Service Bus / Event Hub"]
+        end
+    end
+
+    %% =========================
+    %% Hub-Spoke Topology
+    %% =========================
+    DEVV --> HUB
+    TESTV --> HUB
+    PRODV --> HUB
+
+    HUB --> FW
+    HUB --> DNS
+    HUB --> LOG
+    LOG --> SENT
+    HUB --> KV
+    HUB --> PEPOL
+
+    %% =========================
+    %% App Landing Zone Services
+    %% =========================
+    DEVINT --> DEVV
+    TESTINT --> TESTV
+    PRODINT --> PRODV
+
+    %% =========================
+    %% Private Connectivity
+    %% =========================
+    DEVV --> ADLS
+    TESTV --> ADLS
+    PRODV --> ADLS
+
+    DEVV --> EV
+    TESTV --> EV
+    PRODV --> EV
+
+    DEVV -. Private Endpoint / Private Link .-> ADLS
+    TESTV -. Private Endpoint / Private Link .-> ADLS
+    PRODV -. Private Endpoint / Private Link .-> ADLS
+
+    DEVV -. Private Endpoint / Private Link .-> KV
+    TESTV -. Private Endpoint / Private Link .-> KV
+    PRODV -. Private Endpoint / Private Link .-> KV
+
+    %% =========================
+    %% SaaS ↔ Azure Integration Paths
+    %% =========================
+    D365CE <--> |Dual-write<br/>near-real-time operational sync| D365F
+
+    DAY --> |Payroll journals via governed APIs| PRODINT
+    PRODINT --> D365F
+
+    D365F --> |Business Events| EV
+    D365CE --> |Dataverse business events / process triggers| EV
+    EV --> PRODINT
+    PRODINT --> FABS
+
+    D365CE --> |Link to Fabric<br/>no-copy path| FABS
+
+    D365CE --> |Synapse Link| ADLS
+    D365F --> |F&O analytics export / supported link patterns| ADLS
+
+    PRODINT --> |ETL / ELT / validation / reconciliation| ADLS
+    ADLS --> FABS
+
+    D365F --> SP
+    D365CE --> SP
+
+    %% =========================
+    %% Monitoring / Security Feeds
+    %% =========================
+    DAY --> LOG
+    D365F --> LOG
+    D365CE --> LOG
+    SP --> LOG
+    FABS --> LOG
+    ADLS --> LOG
+    EV --> LOG
+    FW --> LOG
+
+    %% =========================
+    %% Access Restrictions
+    %% =========================
+    ENTRA --> |Stricter CA + PIM in Prod| PROD
+    ENTRA --> |RBAC by environment| DEV
+    ENTRA --> |RBAC by environment| TEST
+```
