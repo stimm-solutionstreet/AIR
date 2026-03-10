@@ -216,3 +216,24 @@ Entra -. "SSO" .-> PBI
   CEDATA -. "Operational dashboards (limited)" .-> PBI
   FIN -. "Operational dashboards (limited)" .-> PBI
 ```
+ConOps Section 6: Data Concept
+```mermaid
+flowchart LR
+
+D365[D365 Finance<br/>Operational Transactions]
+CE[D365 CE<br/>Engagement Data]
+DF[Dayforce<br/>HR & Payroll]
+
+ARCH[Historical Archival / Data Pipelines]
+
+LH[Fabric Lakehouse<br/>Historical Analytical Repository]
+
+BI[Enterprise Reporting<br/>Power BI]
+
+D365 --> ARCH
+DF --> ARCH
+CE --> ARCH
+
+ARCH --> LH
+LH --> BI
+```
