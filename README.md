@@ -425,3 +425,43 @@ flowchart LR
     BI -..- N2
     LAKE -..- N3
 ```
+
+ConOps Section 7: Security
+```mermaid
+flowchart LR
+
+    %% Identity
+    USERS[Enterprise Users<br/>HR • Finance • Grants • Analytics]
+    ENTRA[Microsoft Entra ID<br/>Identity, SSO, MFA]
+
+    USERS --> ENTRA
+
+    %% Application layer
+    subgraph APPS["Enterprise Applications"]
+        DAY[Dayforce<br/>HR / Payroll]
+        D365F[Dynamics 365 Finance<br/>Finance & Grants]
+        D365CE[Dynamics 365 CE<br/>Customer / Program Engagement]
+        FAB[Microsoft Fabric<br/>Analytics & Reporting]
+    end
+
+    ENTRA --> DAY
+    ENTRA --> D365F
+    ENTRA --> D365CE
+    ENTRA --> FAB
+
+    %% Authorization layer
+    AUTH[Application Role-Based Access Control<br/>Least Privilege • Segregation of Duties]
+
+    DAY --> AUTH
+    D365F --> AUTH
+    D365CE --> AUTH
+    FAB --> AUTH
+
+    %% Monitoring
+    MON[Audit Logging & Security Monitoring]
+
+    DAY --> MON
+    D365F --> MON
+    D365CE --> MON
+    FAB --> MON
+```
