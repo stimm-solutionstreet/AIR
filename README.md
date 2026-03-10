@@ -284,6 +284,56 @@ Dayforce --- APIs1[APIs for Integration]
 D365F --- APIs2[APIs for Integration]
 D365CE --- APIs3[APIs for Integration]
 ```
+ConOps Section 5.3: Integration and Synchronization Layer
+```mermaid
+flowchart LR
+    %% Styles
+    classDef sor fill:#e8f0fe,stroke:#4a6fa5,stroke-width:1.5px,color:#111;
+    classDef integ fill:#fff4d6,stroke:#b58900,stroke-width:1.5px,color:#111;
+    classDef control fill:#eef7e7,stroke:#5b8c5a,stroke-width:1.5px,color:#111;
+    classDef note fill:#f7f7f7,stroke:#888,stroke-dasharray: 4 3,color:#111;
+
+    %% Systems of Record
+    subgraph SOR["Operational Systems (Systems of Record)"]
+        CE["Dynamics 365 CE<br/>Customer / Grant Engagement"]
+        FIN["Dynamics 365 Finance<br/>Financial System of Record"]
+        DAY["Dayforce<br/>HR & Payroll"]
+    end
+
+    %% Integration Layer
+    subgraph INT["Integration and Synchronization Layer"]
+        DW["Native Dual-Write<br/>Selected Shared Entities"]
+        API["Governed API Integration<br/>Payroll Journal Transmission"]
+        ORCH["Integration Orchestration & Validation"]
+        MON["Monitoring, Logging,<br/>Alerts, Failure Handling"]
+    end
+
+    %% Main sync paths
+    CE <--> |Near-real-time sync<br/>customers, projects, awards,<br/>selected master / operational entities| DW
+    DW <--> FIN
+
+    DAY --> |Balanced payroll journals| API
+    API --> FIN
+
+    %% Integration controls
+    DW --> ORCH
+    API --> ORCH
+    ORCH --> MON
+
+    %% Guardrails / principles
+    BR1["Business rules remain inside<br/>systems of record"]:::note
+    BR2["No embedded payroll or financial<br/>calculation logic in integration layer"]:::note
+    BR3["Managed inbound / outbound<br/>interfaces only"]:::note
+
+    ORCH --- BR1
+    ORCH --- BR2
+    MON --- BR3
+
+    %% Classes
+    class CE,FIN,DAY sor;
+    class DW,API integ;
+    class ORCH,MON control;
+```
 
 ConOps Section 6: Data Concept
 ```mermaid
