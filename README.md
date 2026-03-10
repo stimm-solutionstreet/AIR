@@ -219,47 +219,41 @@ Entra -. "SSO" .-> PBI
 
 ConOps Section 4: Operational Concept
 ```mermaid
-flowchart LR
+%%{init: { "flowchart": { "subGraphTitleMargin": { "top": 10, "bottom": 10 } } } }%%
+
+flowchart TB
 
 subgraph Users
-U1[HR Staff]
-U2[Finance Staff]
-U3[Grant / Program Staff]
-U4[Executives & Analysts]
+HR[HR Users]
+FIN[Finance Users]
+GRANT[Grant / Program Users]
+EXEC[Executives & Analysts]
 end
 
-subgraph Operational_Systems["Operational Systems (Systems of Record)"]
-D1[Dayforce<br/>HR & Payroll]
-D2[D365 Finance<br/>Financial System of Record]
-D3[D365 Customer Engagement<br>Grant & Engagement Management]
+subgraph Systems_of_Record["Operational Systems (Systems of Record)"]
+DAY[Dayforce<br/>HR & Payroll]
+FINANCE[D365 Finance<br/>Financial System of Record]
+CE[D365 Customer Engagement<br/>Grant & Engagement]
 end
 
-subgraph Integration["Operational Synchronization"]
-SYNC[Governed APIs & Dual Write]
+subgraph Data_Platform["Enterprise Data Platform"]
+FABRIC[Microsoft Fabric<br/>Lakehouse]
 end
 
-subgraph Analytics["Enterprise Data Platform"]
-FAB[Microsoft Fabric<br>Lakehouse]
-BI[Power BI<br/>Dashboards & Reporting]
+subgraph Reporting
+PBI[Power BI<br/>Dashboards & Reporting]
 end
 
-U1 --> D1
-U2 --> D2
-U3 --> D3
+HR --> DAY
+FIN --> FINANCE
+GRANT --> CE
 
-D1 --> SYNC
-D2 --> SYNC
-D3 --> SYNC
+DAY --> FABRIC
+FINANCE --> FABRIC
+CE --> FABRIC
 
-SYNC --> D2
-SYNC --> D3
-
-D1 --> FAB
-D2 --> FAB
-D3 --> FAB
-
-FAB --> BI
-U4 --> BI
+FABRIC --> PBI
+EXEC --> PBI
 ```
 
 ConOps Section 6: Data Concept
