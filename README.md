@@ -255,6 +255,35 @@ CE --> FABRIC
 FABRIC --> PBI
 EXEC --> PBI
 ```
+ConOps Section 5.2: Operational Systems (Systems of Record)
+```mermaid
+%%{init: { "flowchart": { "subGraphTitleMargin": { "top": 0, "bottom": 10 } } } }%%
+
+flowchart LR
+
+subgraph HR_Domain["HR & Payroll Domain"]
+    HRUsers[HR Users]
+    Dayforce[Dayforce<br/>HR & Payroll<br/>System of Record]
+end
+
+subgraph Finance_Domain["Finance Domain"]
+    FinUsers[Finance Users]
+    D365F[Dynamics 365 Finance<br/>Financial System of Record]
+end
+
+subgraph Engagement_Domain["Customer & Grant Engagement"]
+    GrantUsers[Program & Grant Users]
+    D365CE[Dynamics 365 Customer Engagement<br/>Engagement System of Record]
+end
+
+HRUsers --> Dayforce
+FinUsers --> D365F
+GrantUsers --> D365CE
+
+Dayforce --- APIs1[APIs for Integration]
+D365F --- APIs2[APIs for Integration]
+D365CE --- APIs3[APIs for Integration]
+```
 
 ConOps Section 6: Data Concept
 ```mermaid
