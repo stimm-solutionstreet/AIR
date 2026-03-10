@@ -216,6 +216,52 @@ Entra -. "SSO" .-> PBI
   CEDATA -. "Operational dashboards (limited)" .-> PBI
   FIN -. "Operational dashboards (limited)" .-> PBI
 ```
+
+ConOps Section 4: Operational Concept
+```mermaid
+flowchart LR
+
+subgraph Users
+U1[HR Staff]
+U2[Finance Staff]
+U3[Grant / Program Staff]
+U4[Executives & Analysts]
+end
+
+subgraph Operational_Systems["Operational Systems (Systems of Record)"]
+D1[Dayforce<br/>HR & Payroll]
+D2[D365 Finance<br/>Financial System of Record]
+D3[D365 Customer Engagement<br>Grant & Engagement Management]
+end
+
+subgraph Integration["Operational Synchronization"]
+SYNC[Governed APIs & Dual Write]
+end
+
+subgraph Analytics["Enterprise Data Platform"]
+FAB[Microsoft Fabric<br>Lakehouse]
+BI[Power BI<br/>Dashboards & Reporting]
+end
+
+U1 --> D1
+U2 --> D2
+U3 --> D3
+
+D1 --> SYNC
+D2 --> SYNC
+D3 --> SYNC
+
+SYNC --> D2
+SYNC --> D3
+
+D1 --> FAB
+D2 --> FAB
+D3 --> FAB
+
+FAB --> BI
+U4 --> BI
+```
+
 ConOps Section 6: Data Concept
 ```mermaid
 flowchart LR
