@@ -356,3 +356,72 @@ CE --> ARCH
 ARCH --> LH
 LH --> BI
 ```
+
+ConOps Section 6.2: Data Flow
+```mermaid
+%%{init: { "flowchart": { "subGraphTitleMargin": { "top": 0, "bottom": 10 } } } }%%
+
+flowchart LR
+    %% Styles
+    classDef ops fill:#EAF2FF,stroke:#4E79A7,stroke-width:1.5px,color:#111;
+    classDef integ fill:#FFF3D6,stroke:#C58A00,stroke-width:1.5px,color:#111;
+    classDef data fill:#E8F6EC,stroke:#4F8A5B,stroke-width:1.5px,color:#111;
+    classDef ext fill:#F4EAFE,stroke:#8A63B8,stroke-width:1.5px,color:#111;
+    classDef note fill:#F7F7F7,stroke:#888,stroke-dasharray: 4 3,color:#111;
+
+    %% Operational systems
+    subgraph OPS["Systems of Record"]
+        DAY["Dayforce<br/>HR & Payroll"]:::ops
+        FIN["Dynamics 365 Finance<br/>Finance & Grant Accounting"]:::ops
+        CE["Dynamics 365 CE<br/>Customer / Grant Engagement"]:::ops
+    end
+
+    %% Integration / sync
+    subgraph INT["Operational Synchronization"]
+        DW["Dual-write<br/>selected shared entities"]:::integ
+        PAY["Governed payroll integration<br/>journals / payroll-related financial data"]:::integ
+    end
+
+    %% Data platform
+    subgraph EDP["Enterprise Data Platform"]
+        ING["Controlled ingestion pipelines<br/>batch / incremental / API"]:::data
+        LAKE["Microsoft Fabric Lakehouse<br/>governed analytical copies<br/>historical retention"]:::data
+    end
+
+    %% Analytics
+    subgraph ANA["Reporting and Analytics"]
+        BI["Power BI / governed semantic models<br/>cross-domain reporting & analytics"]:::data
+    end
+
+    %% External operational interfaces
+    subgraph EXT["External Operational Integrations"]
+        BANK["Banks / financial institutions"]:::ext
+        VEND["Vendors / partner portals"]:::ext
+        REG["Regulatory / grantor systems"]:::ext
+    end
+
+    %% Operational synchronization flows
+    CE <--> DW
+    DW <--> FIN
+    DAY --> PAY --> FIN
+
+    %% Analytical ingestion flows
+    DAY --> ING
+    FIN --> ING
+    CE --> ING
+    ING --> LAKE --> BI
+
+    %% External operational flows
+    FIN <--> BANK
+    FIN <--> VEND
+    FIN <--> REG
+
+    %% Notes / constraints
+    N1["Operational sync supports business processes,<br/>not analytics"]:::note
+    N2["Reporting runs against the analytics platform,<br/>not operational systems"]:::note
+    N3["Analytical workloads are separated to protect<br/>transaction performance"]:::note
+
+    PAY -..- N1
+    BI -..- N2
+    LAKE -..- N3
+```
