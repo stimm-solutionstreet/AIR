@@ -1,7 +1,7 @@
-# AIR
+# AIR Diagrams
 This is a location for editing Mermaid files for the ConOps and other documents.
 
-Systems of Record → Enterprise Data Platform → Reporting and Analytics 
+## Systems of Record → Enterprise Data Platform → Reporting and Analytics 
 ```mermaid
 %%{init: { "flowchart": { "subGraphTitleMargin": { "top": 60, "bottom": 60 } } } }%%
 
@@ -14,7 +14,7 @@ REP["Reporting and Analytics"]
 SOR --> EDP
 EDP --> REP
 ```
-High Level D365 + Fabric reference diagram
+## High Level D365 + Fabric reference diagram
 ```mermaid
 flowchart TB
 
@@ -67,7 +67,7 @@ WH --> PBI
 LH --> DS
 ```
 
-High level target state diagram.
+## High level target state diagram.
 ```mermaid
 flowchart LR
 
@@ -126,7 +126,7 @@ Entra -. "SSO" .-> PBI
   CE -. "Operational dashboards (limited)" .-> PBI
   FIN -. "Operational dashboards (limited)" .-> PBI
 ```
-Medalion Architecture
+## Medalion Architecture
 ```mermaid
 flowchart LR
 
@@ -155,7 +155,7 @@ style Silver fill:#BCC6CC,stroke:#333
 style Gold fill:#FFD700,stroke:#333
 ```
 
-Low level target state diagram.
+## Low level target state diagram.
 ```mermaid
 flowchart LR
 
@@ -217,7 +217,7 @@ Entra -. "SSO" .-> PBI
   FIN -. "Operational dashboards (limited)" .-> PBI
 ```
 
-ConOps Section 4: Operational Concept
+## ConOps Section 4: Operational Concept
 ```mermaid
 %%{init: { "flowchart": { "subGraphTitleMargin": { "top": 10, "bottom": 10 } } } }%%
 
@@ -255,7 +255,7 @@ CE --> FABRIC
 FABRIC --> PBI
 EXEC --> PBI
 ```
-ConOps Section 5.2: Operational Systems (Systems of Record)
+## ConOps Section 5.2: Operational Systems (Systems of Record)
 ```mermaid
 %%{init: { "flowchart": { "subGraphTitleMargin": { "top": 0, "bottom": 10 } } } }%%
 
@@ -284,7 +284,7 @@ Dayforce --- APIs1[APIs for Integration]
 D365F --- APIs2[APIs for Integration]
 D365CE --- APIs3[APIs for Integration]
 ```
-ConOps Section 5.3: Integration and Synchronization Layer
+## ConOps Section 5.3: Integration and Synchronization Layer
 ```mermaid
 flowchart LR
     %% Styles
@@ -335,7 +335,7 @@ flowchart LR
     class ORCH,MON control;
 ```
 
-ConOps Section 6: Data Concept
+## ConOps Section 6: Data Concept
 ```mermaid
 flowchart LR
 
@@ -357,7 +357,7 @@ ARCH --> LH
 LH --> BI
 ```
 
-ConOps Section 6.2: Data Flow
+## ConOps Section 6.2: Data Flow
 ```mermaid
 %%{init: { "flowchart": { "subGraphTitleMargin": { "top": 0, "bottom": 10 } } } }%%
 
@@ -426,34 +426,43 @@ flowchart LR
     LAKE -..- N3
 ```
 
-ConOps Section 7: Security
+## ConOps Section 7: Security
+
+Authentication across enterprise systems is centralized through Microsoft Entra ID, providing single sign-on and identity lifecycle management for users accessing Dayforce, Dynamics 365, and Microsoft Fabric. Each platform enforces its own role-based access controls aligned with least-privilege and segregation-of-duties principles. Access activity across operational and analytics systems is logged and monitored to support audit, compliance, and security oversight.
 ```mermaid
-flowchart TB
 %%{init: { "flowchart": { "subGraphTitleMargin": { "top": 0, "bottom": 10 } } } }%%
 
-%% Identity
-subgraph ID["Identity & Access Control"]
-    USERS[Enterprise Users]
+flowchart TB
+
+%% Users
+USERS[Enterprise Users<br/>HR • Finance • Grants • Analysts]
+
+%% Identity plane
+subgraph ID["Identity Plane"]
     ENTRA[Microsoft Entra ID<br/>SSO • MFA • Identity Lifecycle]
 end
 
 USERS --> ENTRA
 
-%% Operational systems
-subgraph OPS["Operational Systems"]
-    DAY[Dayforce<br/>HR / Payroll<br/>RBAC]
-    D365F[Dynamics 365 Finance<br/>Finance / Grants<br/>RBAC]
-    D365CE[Dynamics 365 CE<br/>Program / Engagement<br/>RBAC]
+%% Workload plane
+subgraph WORKLOADS["Enterprise Workloads"]
+    
+    subgraph OPS["Operational Systems (Systems of Record)"]
+        DAY[Dayforce<br/>HR / Payroll<br/>Role-Based Access]
+        D365F[Dynamics 365 Finance<br/>Finance & Grants<br/>Role-Based Access]
+        D365CE[Dynamics 365 CE<br/>Customer / Program Engagement<br/>Role-Based Access]
+    end
+
+    subgraph DATA["Analytics Platform"]
+        FAB[Microsoft Fabric<br/>Lakehouse • Power BI<br/>Dataset / Workspace Access]
+    end
+
 end
 
-%% Analytics
-subgraph DATA["Enterprise Data & Analytics"]
-    FAB[Microsoft Fabric<br/>Datasets / Workspaces<br/>RBAC]
-end
-
-%% Monitoring
-subgraph MON["Security Monitoring"]
-    LOG[Access Logging & Audit]
+%% Monitoring plane
+subgraph SECOPS["Security Monitoring & Audit"]
+    LOG[Access Logging]
+    AUD[Audit & Compliance Oversight]
 end
 
 ENTRA --> DAY
@@ -465,9 +474,11 @@ DAY --> LOG
 D365F --> LOG
 D365CE --> LOG
 FAB --> LOG
+
+LOG --> AUD
 ```
 
-Network view draft
+## Network view draft
 ```mermaid
 flowchart TB
     %% =========================
