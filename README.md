@@ -428,42 +428,43 @@ flowchart LR
 
 ConOps Section 7: Security
 ```mermaid
-flowchart LR
+flowchart TB
+%%{init: { "flowchart": { "subGraphTitleMargin": { "top": 0, "bottom": 10 } } } }%%
 
-    %% Identity
-    USERS[Enterprise Users<br/>HR • Finance • Grants • Analytics]
-    ENTRA[Microsoft Entra ID<br/>Identity, SSO, MFA]
+%% Identity
+subgraph ID["Identity & Access Control"]
+    USERS[Enterprise Users]
+    ENTRA[Microsoft Entra ID<br/>SSO • MFA • Identity Lifecycle]
+end
 
-    USERS --> ENTRA
+USERS --> ENTRA
 
-    %% Application layer
-    subgraph APPS["Enterprise Applications"]
-        DAY[Dayforce<br/>HR / Payroll]
-        D365F[Dynamics 365 Finance<br/>Finance & Grants]
-        D365CE[Dynamics 365 CE<br/>Customer / Program Engagement]
-        FAB[Microsoft Fabric<br/>Analytics & Reporting]
-    end
+%% Operational systems
+subgraph OPS["Operational Systems"]
+    DAY[Dayforce<br/>HR / Payroll<br/>RBAC]
+    D365F[Dynamics 365 Finance<br/>Finance / Grants<br/>RBAC]
+    D365CE[Dynamics 365 CE<br/>Program / Engagement<br/>RBAC]
+end
 
-    ENTRA --> DAY
-    ENTRA --> D365F
-    ENTRA --> D365CE
-    ENTRA --> FAB
+%% Analytics
+subgraph DATA["Enterprise Data & Analytics"]
+    FAB[Microsoft Fabric<br/>Datasets / Workspaces<br/>RBAC]
+end
 
-    %% Authorization layer
-    AUTH[Application Role-Based Access Control<br/>Least Privilege • Segregation of Duties]
+%% Monitoring
+subgraph MON["Security Monitoring"]
+    LOG[Access Logging & Audit]
+end
 
-    DAY --> AUTH
-    D365F --> AUTH
-    D365CE --> AUTH
-    FAB --> AUTH
+ENTRA --> DAY
+ENTRA --> D365F
+ENTRA --> D365CE
+ENTRA --> FAB
 
-    %% Monitoring
-    MON[Audit Logging & Security Monitoring]
-
-    DAY --> MON
-    D365F --> MON
-    D365CE --> MON
-    FAB --> MON
+DAY --> LOG
+D365F --> LOG
+D365CE --> LOG
+FAB --> LOG
 ```
 
 Network view draft
