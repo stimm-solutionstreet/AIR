@@ -637,3 +637,56 @@ Entra -. "SSO" .-> PBI
   CEDATA -. "Operational dashboards (limited)" .-> PBI
   FIN -. "Operational dashboards (limited)" .-> PBI
 ```
+## OV-1 style diagram -- AIR modernized operations: HR, Finance, Grants, and enterprise reporting across coordinated systems of record
+
+This diagram shows how users and external stakeholders interact with the modernized AIR operational environment. Core business functions are executed in domain systems of record (Dayforce for HR, Dynamics 365 for finance and program management), with enterprise reporting delivered through the Fabric analytics platform and external interactions mediated through controlled interfaces.
+
+For clarity, the documents pillar is not shown. HR documents will be accessed through Dayforce, financial and grant documents will be accessed through D365, historical and knowledgebase documents will be stored in Sharepoint.
+
+```mermaid
+flowchart LR
+    %% Actors
+    subgraph A[Operational Actors]
+        HR[HR Staff]
+        FIN[Finance Staff]
+        PM[Program / Grant Managers]
+        EX[Executives / Analysts]
+        EXT[External Stakeholders]
+    end
+
+    %% Core operational systems
+    subgraph O[Core Operational Systems]
+        DF[Dayforce<br/>HR & Payroll]
+        D365F[D365 Finance<br/>Finance System of Record]
+        D365CE[D365 Customer Engagement<br/>Programs / Grants]
+    end
+
+    %% Mediated external access
+    PORTAL[External Portal / Managed Interfaces]
+
+    %% Enterprise analytics
+    subgraph D[Enterprise Reporting & Analytics]
+        FAB[Fabric Lakehouse]
+        BI[Dashboards / Reporting]
+    end
+
+    %% Core operational use
+    HR -->|HR and payroll operations| DF
+    FIN -->|financial operations| D365F
+    PM -->|grant / program workflows| D365CE
+    EX -->|enterprise reporting and analytics| BI
+
+    %% Key operational exchanges
+    DF -->|payroll journals| D365F
+    D365CE <--> |shared operational data| D365F
+
+    %% Analytics pattern
+    DF -->|governed data pipelines| FAB
+    D365F -->|governed data pipelines| FAB
+    D365CE -->|governed data pipelines| FAB
+    FAB --> BI
+
+    %% External access pattern
+    EXT -->|submit / receive information| PORTAL
+    PORTAL -->|controlled workflows / APIs| D365CE
+```
