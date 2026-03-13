@@ -677,7 +677,8 @@ flowchart LR
     EX -->|enterprise reporting and analytics| BI
 
     %% Key operational exchanges
-    DF -->|payroll journals| D365F
+    DF -->|employee data<br/>payroll journals| D365F
+    D365F -->|time data| DF
     D365CE <--> |shared operational data| D365F
 
     %% Analytics pattern
